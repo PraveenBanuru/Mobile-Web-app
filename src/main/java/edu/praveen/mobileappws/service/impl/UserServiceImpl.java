@@ -3,6 +3,7 @@ package edu.praveen.mobileappws.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import edu.praveen.mobileappws.io.entity.UserEntity;
 import edu.praveen.mobileappws.repository.UserRepository;
 import edu.praveen.mobileappws.service.UserService;
 import edu.praveen.mobileappws.ui.model.shared.Utils;
+import edu.praveen.mobileappws.ui.model.shared.dto.AddressDto;
 import edu.praveen.mobileappws.ui.model.shared.dto.UserDto;
 
 @Service
@@ -35,20 +37,36 @@ public class UserServiceImpl implements UserService {
 	public UserDto createUser(UserDto user) {
 
 		UserEntity storedUserDetails = userRepo.findUserByEmail(user.getEmail());
-		UserEntity userEntity = new UserEntity();
-		BeanUtils.copyProperties(user, userEntity);
+		
+		for(int i=0;i<user.getAddresses().size();i++) {
+			
+			AddressDto address = user.getAddresses().get(i);
+			address.setUserDetails(user);
+			address.setAddressId(utils.generateAddressId(30));
+			
+			user.getAddresses().set(i, address);
+			
+		}
+		
+		ModelMapper modelMapper = new ModelMapper();
+		
+		UserEntity userEntity= modelMapper.map(user, UserEntity.class);
+		//BeanUtils.copyProperties(user, userEntity);
 
 		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
 		String publicUserId = utils.generateUserId(30);
-
 		userEntity.setUserId(publicUserId);
+		
+			
 		if (storedUserDetails == null) {
 			storedUserDetails = userRepo.save(userEntity);
 		} else
 			throw new RuntimeException("Record alredy exists");
-		UserDto returnValue = new UserDto();
-		BeanUtils.copyProperties(storedUserDetails, returnValue);
+		
+		
+		UserDto returnValue= modelMapper.map(storedUserDetails, UserDto.class);
+		//BeanUtils.copyProperties(storedUserDetails, returnValue);
 
 		return returnValue;
 	}
