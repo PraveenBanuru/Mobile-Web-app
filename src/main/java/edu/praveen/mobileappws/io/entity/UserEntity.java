@@ -1,11 +1,14 @@
 package edu.praveen.mobileappws.io.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 
 
@@ -35,6 +38,11 @@ public class UserEntity implements Serializable {
 	private String emailVerificationToken;
 	@Column(nullable = false)
 	private boolean emailVerificationStatus = false;
+	
+	@OneToMany(mappedBy = "userDetails", cascade=CascadeType.ALL)
+	private List<AddressEntity> addresses;
+	
+	
 	public long getId() {
 		return id;
 	}
@@ -88,6 +96,12 @@ public class UserEntity implements Serializable {
 	}
 	public void setEmailVerificationStatus(boolean emailVerificationStatus) {
 		this.emailVerificationStatus = emailVerificationStatus;
+	}
+	public List<AddressEntity> getAddresses() {
+		return addresses;
+	}
+	public void setAddresses(List<AddressEntity> addresses) {
+		this.addresses = addresses;
 	}
 
 }
