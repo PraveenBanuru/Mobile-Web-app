@@ -1,6 +1,7 @@
 package edu.praveen.mobileappws.ui.model.reponse;
 
-public class AddressRest {
+
+public class AddressRest  {
 
 	private String addressId;
 	private String city;
