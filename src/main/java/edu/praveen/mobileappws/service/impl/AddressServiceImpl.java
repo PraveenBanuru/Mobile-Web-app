@@ -36,11 +36,12 @@ public class AddressServiceImpl implements AddressService {
 
 		Iterable<AddressEntity> addresses = addressRepo.findAllByUserDetails(user);
 
-		for (AddressEntity address : addresses) {
+		/*for (AddressEntity address : addresses) {
 
 			returnValue.add(modelMapper.map(address, AddressDto.class));
-		}
+		}*/
 
+		addresses.forEach((address)-> returnValue.add(modelMapper.map(address, AddressDto.class)));
 		return returnValue;
 	}
 
